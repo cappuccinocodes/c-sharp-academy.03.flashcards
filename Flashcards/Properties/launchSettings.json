@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "flashcards": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\\\study\\\\flashcards\\\\flashcards"
+    }
+  }
+}
