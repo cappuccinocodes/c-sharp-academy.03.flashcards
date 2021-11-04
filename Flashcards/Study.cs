@@ -12,5 +12,10 @@ namespace flashcards
         {
             Console.WriteLine("\n\nHi there! I'm StudySession()\n\n");
         }
+
+        internal static void GetUsercommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
