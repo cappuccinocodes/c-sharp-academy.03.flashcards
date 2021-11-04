@@ -16,40 +16,82 @@ namespace flashcards
 
         internal static void GetUsercommand()
         {
-            Console.WriteLine("\n\nFlashcards Area");
-            Console.WriteLine("\nWhat would you like to do?");
-            Console.WriteLine("\nType 0 to Close Application.");
-            Console.WriteLine("Type 1 to Return to Main Menu");
-            Console.WriteLine("Type 2 to Create New Flashcard Stack");
+            Console.WriteLine("\n\nFlashcards Area\n");
+            GetStacks();
 
-
-            string commandInput = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(commandInput))
+            bool closeArea = false;
+            while (closeArea == false)
             {
-                Console.WriteLine("\nInvalid Command. Please choose an option\n");
-                GetUsercommand();
-            }
+               Console.WriteLine("\nWhat would you like to do?");
+                Console.WriteLine("\nType 0 to Close Application.");
+                Console.WriteLine("Type 1 to Return to Main Menu");
+                Console.WriteLine("Type 2 to Create New Flashcard Stack");
 
-            int command = Convert.ToInt32(commandInput);
 
-            switch (command)
-            {
-                case 0:
-                    Environment.Exit(0);
-                    break;
-                case 1:
-                    Program.StartApp();
-                    break;
-                case 2:
-                    CreateFlashcardStack();
-                    break;
-                default:
+                string commandInput = Console.ReadLine();
+
+                int n;
+
+                if (string.IsNullOrEmpty(commandInput) || !int.TryParse(commandInput, out n))
+                {
                     Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
-                    GetUsercommand();
-                    break;
+                    continue;
+                }
+
+                int command = Convert.ToInt32(commandInput);
+
+                switch (command)
+                {
+                    case 0:
+                        Environment.Exit(0);
+                        break;
+                    case 1:
+                        Program.StartApp();
+                        break;
+                    case 2:
+                        CreateFlashcardStack();
+                        break;
+                    default:
+                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
+                        break;
+                }
             }
         }
+
+        internal static void GetStacks()
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                var tableCmd = connection.CreateCommand();
+                tableCmd.CommandText = "SELECT * FROM stack";
+
+                List<Stack> stacks = new List<Stack>();
+
+                SqlDataReader reader = tableCmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        stacks.Add(
+                            new Stack
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1)
+                            });
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\n\nNo rows found.\n\n");
+                }
+
+                reader.Close();
+
+            }
+        }
+
         internal static void CreateFlashcardStack()
         {
             Stack stack = new Stack();

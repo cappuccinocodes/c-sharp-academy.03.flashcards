@@ -8,14 +8,14 @@ namespace flashcards
 {
     public class Study
     {
+        internal static void GetUsercommand()
+        {
+            Console.WriteLine("\n\nHi there! I'm StudySession() and I'm not implemented.\n\n");
+        }
+
         internal static void StudySession(int id)
         {
             Console.WriteLine("\n\nHi there! I'm StudySession()\n\n");
-        }
-
-        internal static void GetUsercommand()
-        {
-            throw new NotImplementedException();
         }
     }
 }
