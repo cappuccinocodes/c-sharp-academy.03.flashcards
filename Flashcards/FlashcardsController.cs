@@ -67,21 +67,30 @@ namespace flashcards
                     $@"INSERT INTO stack (Name) VALUES ('{stack.Name}')";
                 Console.WriteLine(tableCmd.CommandText);
                 tableCmd.ExecuteNonQuery();
-
-                tableCmd.CommandText =
-                    $@"INSERT INTO stack (Name) VALUES ('{stack.Name}')";
-                Console.WriteLine(tableCmd.CommandText);
-                tableCmd.ExecuteNonQuery();
                 conn.Close();
             }
 
+            var stackId = GetStackId();
+
             Console.WriteLine("\n\nYour flashcards stack was successfully created.\n\n");
-            CreateFlashcard();
+            CreateFlashcard(stackId);
         }
 
-        internal static void CreateFlashcard()
+        private static int GetStackId()
         {
-            Console.WriteLine("\n\nHi there! I'm CreateFlashcard()\n\n");
+            SqlConnection conn = new SqlConnection(connectionString);
+
+                conn.Open();
+                SqlCommand comm = new SqlCommand("SELECT IDENT_CURRENT('stack')", conn);
+                int id = Convert.ToInt32(comm.ExecuteScalar());
+                conn.Close();
+                return id;
+            
+        }
+
+        internal static void CreateFlashcard(int stackId)
+        {
+            Console.WriteLine($"\n\nHi there! I'm creating a flashcard for stack {stackId}\n\n");
         }
     }
 }
