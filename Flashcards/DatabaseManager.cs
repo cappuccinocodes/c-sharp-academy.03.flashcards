@@ -49,7 +49,8 @@ namespace flashcards
                 var tableCmd = conn.CreateCommand();
 
                 tableCmd.CommandText =
-                    $@" CREATE TABLE stack (
+                    $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'stack')
+                        CREATE TABLE stack (
 	                      Id int IDENTITY(1,1) NOT NULL,
 	                      Name varchar(100) NOT NULL UNIQUE,
 	                      PRIMARY KEY (Id)
@@ -58,7 +59,8 @@ namespace flashcards
                 tableCmd.ExecuteNonQuery();
 
                 tableCmd.CommandText =
-                    $@" CREATE TABLE flashcard (
+                    $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'flashcard')
+                        CREATE TABLE flashcard (
                           Id int NOT NULL PRIMARY KEY,
                           Question varchar(30) NOT NULL,
                           Answer varchar(30) NOT NULL,

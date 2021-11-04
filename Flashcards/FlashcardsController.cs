@@ -6,11 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using flashcards.Models;
 using Flashcards;
+using Microsoft.Data.SqlClient;
 
 namespace flashcards
 {
     public class FlashcardsController
     {
+        public static readonly string connectionString = "Server=(localdb)\\MSSQLLocalDB; Initial Catalog=quizDb; Integrated Security=true;";
+
         internal static void GetUsercommand()
         {
             Console.WriteLine("\n\nFlashcards Area");
@@ -53,6 +56,27 @@ namespace flashcards
 
             Console.WriteLine("\n\nPlease Enter Stack Name\n\n");
             stack.Name = Console.ReadLine();
+
+            SqlConnection conn = new SqlConnection(connectionString);
+
+            using (conn)
+            {
+                conn.Open();
+                var tableCmd = conn.CreateCommand();
+                tableCmd.CommandText =
+                    $@"INSERT INTO stack (Name) VALUES ('{stack.Name}')";
+                Console.WriteLine(tableCmd.CommandText);
+                tableCmd.ExecuteNonQuery();
+
+                tableCmd.CommandText =
+                    $@"INSERT INTO stack (Name) VALUES ('{stack.Name}')";
+                Console.WriteLine(tableCmd.CommandText);
+                tableCmd.ExecuteNonQuery();
+                conn.Close();
+            }
+
+            Console.WriteLine("\n\nYour flashcards stack was successfully created.\n\n");
+            CreateFlashcard();
         }
 
         internal static void CreateFlashcard()
