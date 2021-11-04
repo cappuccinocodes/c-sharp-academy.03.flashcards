@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleTableExt;
 using flashcards.Models;
 using Flashcards;
 using Microsoft.Data.SqlClient;
@@ -17,7 +18,7 @@ namespace flashcards
         internal static void GetUsercommand()
         {
             Console.WriteLine("\n\nFlashcards Area\n");
-            GetStacks();
+            ShowStacks();
 
             bool closeArea = false;
             while (closeArea == false)
@@ -58,7 +59,19 @@ namespace flashcards
             }
         }
 
-        internal static void GetStacks()
+        private static void ShowStacks()
+        {
+            List<Stack> tableData = GetStacks();
+
+            Console.WriteLine("\n\n");
+
+            ConsoleTableBuilder
+                .From(tableData)
+                .ExportAndWriteLine();
+            Console.WriteLine("\n\n");
+        }
+
+        internal static List<Stack> GetStacks()
         {
             using (var connection = new SqlConnection(connectionString))
             {
@@ -89,6 +102,7 @@ namespace flashcards
 
                 reader.Close();
 
+                return stacks;
             }
         }
 
