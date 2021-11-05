@@ -28,6 +28,7 @@ namespace flashcards
                 Console.WriteLine("\nType 0 to Close Application.");
                 Console.WriteLine("Type 1 to Return to Main Menu");
                 Console.WriteLine("Type 2 to Create New Flashcard Stack");
+                Console.WriteLine("Type 3 to Manage a Stack");
 
                 string commandInput = Console.ReadLine();
 
@@ -52,9 +53,34 @@ namespace flashcards
                     case 2:
                         CreateFlashcardStack();
                         break;
+                    case 3:
+                        ManageStack();
+                        break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
                         break;
+                }
+            }
+        }
+
+        private static void ManageStack()
+        {
+            ShowStacks();
+            Console.WriteLine("\nType the id of the stack you'd like to manage.\n");
+
+            string stackId = Console.ReadLine();
+
+            int n;
+            bool isNumber = string.IsNullOrEmpty(stackId) || !int.TryParse(stackId, out n);
+
+            while (!isNumber)
+            {
+                Console.WriteLine("\nInvalid Command. Please type a numeric value");
+                stackId = Console.ReadLine();
+
+                if (isNumber)
+                {
+                    break;
                 }
             }
         }
@@ -72,6 +98,41 @@ namespace flashcards
         }
 
         internal static List<Stack> GetStacks()
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                var tableCmd = connection.CreateCommand();
+                tableCmd.CommandText = "SELECT * FROM stack";
+
+                List<Stack> stacks = new List<Stack>();
+
+                SqlDataReader reader = tableCmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        stacks.Add(
+                            new Stack
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1)
+                            });
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\n\nNo rows found.\n\n");
+                }
+
+                reader.Close();
+
+                return stacks;
+            }
+        }
+
+        internal static List<Stack> GetStack()
         {
             using (var connection = new SqlConnection(connectionString))
             {
