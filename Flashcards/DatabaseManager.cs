@@ -61,7 +61,7 @@ namespace flashcards
                 tableCmd.CommandText =
                     $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'flashcard')
                         CREATE TABLE flashcard (
-                          Id int NOT NULL PRIMARY KEY,
+                          Id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
                           Question varchar(30) NOT NULL,
                           Answer varchar(30) NOT NULL,
                           StackId int NOT NULL 

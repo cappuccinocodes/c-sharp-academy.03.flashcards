@@ -13,7 +13,8 @@ namespace flashcards
 {
     public class FlashcardsController
     {
-        public static readonly string connectionString = "Server=(localdb)\\MSSQLLocalDB; Initial Catalog=quizDb; Integrated Security=true;";
+        public static readonly string connectionString =
+            "Server=(localdb)\\MSSQLLocalDB; Initial Catalog=quizDb; Integrated Security=true;";
 
         internal static void GetUsercommand()
         {
@@ -23,11 +24,10 @@ namespace flashcards
             bool closeArea = false;
             while (closeArea == false)
             {
-               Console.WriteLine("\nWhat would you like to do?");
+                Console.WriteLine("\nWhat would you like to do?");
                 Console.WriteLine("\nType 0 to Close Application.");
                 Console.WriteLine("Type 1 to Return to Main Menu");
                 Console.WriteLine("Type 2 to Create New Flashcard Stack");
-
 
                 string commandInput = Console.ReadLine();
 
@@ -44,7 +44,7 @@ namespace flashcards
                 switch (command)
                 {
                     case 0:
-                        Environment.Exit(0);
+                        closeArea = true;
                         break;
                     case 1:
                         Program.StartApp();
@@ -129,24 +129,72 @@ namespace flashcards
             var stackId = GetStackId();
 
             Console.WriteLine("\n\nYour flashcards stack was successfully created.\n\n");
-            CreateFlashcard(stackId);
+            CreateFlashcard(stackId, stack.Name);
         }
 
         private static int GetStackId()
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
-                conn.Open();
-                SqlCommand comm = new SqlCommand("SELECT IDENT_CURRENT('stack')", conn);
-                int id = Convert.ToInt32(comm.ExecuteScalar());
-                conn.Close();
-                return id;
-            
+            conn.Open();
+            SqlCommand comm = new SqlCommand("SELECT IDENT_CURRENT('stack')", conn);
+            int id = Convert.ToInt32(comm.ExecuteScalar());
+            conn.Close();
+            return id;
+
         }
 
-        internal static void CreateFlashcard(int stackId)
+        internal static void CreateFlashcard(int stackId, string name)
         {
-            Console.WriteLine($"\n\nHi there! I'm creating a flashcard for stack {stackId}\n\n");
+            Console.WriteLine($"\n\nHi there! I'm creating a flashcard for stack {stackId} - {name}\n\n");
+
+            bool createFlashcard = true;
+
+            while (createFlashcard)
+            {
+                Flashcard flashcard = new Flashcard();
+
+                Console.WriteLine("\n\nPlease Enter Question:\n\n");
+                flashcard.Question = Console.ReadLine();
+
+                Console.WriteLine("\n\nPlease Enter Answer:\n\n");
+                flashcard.Answer = Console.ReadLine();
+
+                SqlConnection conn = new SqlConnection(connectionString);
+
+                using (conn)
+                {
+                    conn.Open();
+                    var tableCmd = conn.CreateCommand();
+                    tableCmd.CommandText =
+                        $@"INSERT INTO flashcard (question, answer, stackId) VALUES ('{flashcard.Question}', '{flashcard.Answer}', '{stackId}')";
+                    tableCmd.ExecuteNonQuery();
+
+                    Console.WriteLine(
+                        $"\n\nWould you like to create another flashcard for stack {stackId} - {name}\n\n? (Y/N)\n\n");
+                    
+                    string anotherFlashcard = Console.ReadLine();
+
+                    while (anotherFlashcard != "Y" && anotherFlashcard != "N")
+                    {
+                        Console.WriteLine(
+                            $"\n\nPlease choose Y/N\n\n? (Y/N)\n\n");
+                        anotherFlashcard = Console.ReadLine();
+
+                        if (anotherFlashcard == "Y" || anotherFlashcard == "N")
+                        {
+                            return;
+                        }
+                    }
+
+                    if (anotherFlashcard == "N")
+                    {
+                        createFlashcard = false;
+                    }
+                  
+                }
+            }
         }
     }
 }
+
