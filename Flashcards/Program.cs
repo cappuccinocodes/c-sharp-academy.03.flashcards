@@ -42,7 +42,7 @@ namespace Flashcards
                         closeApp = true;
                         break;
                     case 1:
-                        FlashcardsController.GetUsercommand();
+                        StacksController.GetUsercommand();
                         break;
                     case 2:
                         Study.GetUsercommand();
