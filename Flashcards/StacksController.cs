@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ConsoleTableExt;
 using flashcards.Models;
+using flashcards.Models.DTOs;
 using Flashcards;
 using Microsoft.Data.SqlClient;
 
@@ -18,18 +19,18 @@ namespace flashcards
 
         public static void ManageStack()
         {
-            var stacks = GetStacks();
-            TableVisualisationEngine.ShowTable(stacks, null);
+            GetStacks();
+     
             Console.WriteLine("\nType the id of the stack you'd like to manage.\n");
 
             string stackIdString = UserCommands.GetIdForManageStack();
 
             int stackId = Int32.Parse(stackIdString);
-            GetStackById(stackId);
 
-            UserCommands.ManageStackMenu(stackId);
+            List<FlashcardsWithStack> stack = GetStackWithCards(stackId);
+
+            UserCommands.ManageStackMenu(stackId, stack);
         }
-
         internal static List<Stack> GetStacks()
         {
             using var connection = new SqlConnection(connectionString);
@@ -60,10 +61,13 @@ namespace flashcards
 
             reader.Close();
 
+            string[] columns = { "Id", "Name" };
+
+            TableVisualisationEngine.ShowTable(stacks, null);
+
             return stacks;
         }
-
-        internal static void GetStackById(int id)
+        internal static List<FlashcardsWithStack> GetStackWithCards(int id)
         {
             using var connection = new SqlConnection(connectionString);
             Stack stack = new();
@@ -75,9 +79,9 @@ namespace flashcards
                        FROM flashcard f
                        LEFT JOIN stack s
                        ON s.Id = f.StackId
-                       WHERE s.Id = 1; ";
+                       WHERE s.Id={id}";
 
-            List<StackWithFlashcards> cards = new();
+            List<FlashcardsWithStack> cards = new();
 
             SqlDataReader reader = tableCmd.ExecuteReader();
 
@@ -86,7 +90,7 @@ namespace flashcards
                 while (reader.Read())
                 {
                     cards.Add(
-                        new StackWithFlashcards
+                        new FlashcardsWithStack
                         {
                             Id = reader.GetInt32(0),
                             StackName = reader.GetString(1),
@@ -100,16 +104,33 @@ namespace flashcards
                 Console.WriteLine("\n\nNo rows found.\n\n");
             }
 
-            Console.WriteLine("\n\n");
-
-            string stackName = cards.FirstOrDefault().StackName;
-            string tableTitle = $"{id} - {stackName}";
-
             reader.Close();
 
-            TableVisualisationEngine.ShowTable(cards, tableTitle);
-        }
+            Console.WriteLine("\n\n");
+            
+            string stackName = cards.FirstOrDefault()?.StackName;
+            string tableTitle = $"{id} - {stackName}";
 
+            List<FlashcardsWithStackToView> stackToView = new List<FlashcardsWithStackToView>();
+
+            int cardIndex = 1; 
+            cards.ForEach(x =>
+            {
+                stackToView.Add(new FlashcardsWithStackToView
+                {
+                    Id = cardIndex,
+                    Answer = x.Answer,
+                    Question = x.Question
+                });
+
+                cardIndex++;
+            }); 
+
+            TableVisualisationEngine.ShowTable(stackToView, tableTitle);
+
+            return cards;
+
+        }
         internal static void CreateStack()
         {
             Stack stack = new();
@@ -132,9 +153,8 @@ namespace flashcards
             var stackId = GetStackId();
 
             Console.WriteLine("\n\nYour flashcards stack was successfully created.\n\n");
-            CreateFlashcard(stackId, stack.Name);
+            FlashcardsController.CreateFlashcard(stackId, stack.Name);
         }
-
         internal static void DeleteStack(int stackId)
         {
             SqlConnection conn = new(connectionString);
@@ -161,55 +181,6 @@ namespace flashcards
             conn.Close();
             return id;
 
-        }
-
-        internal static void CreateFlashcard(int stackId, string name)
-        {
-            Console.WriteLine($"\n\nHi there! I'm creating a flashcard for stack {stackId} - {name}\n\n");
-
-            bool createFlashcard = true;
-
-            while (createFlashcard)
-            {
-                Flashcard flashcard = new();
-
-                Console.WriteLine("\n\nPlease Enter Question:\n\n");
-                flashcard.Question = Console.ReadLine();
-
-                Console.WriteLine("\n\nPlease Enter Answer:\n\n");
-                flashcard.Answer = Console.ReadLine();
-
-                SqlConnection conn = new(connectionString);
-
-                using (conn)
-                {
-                    conn.Open();
-                    var tableCmd = conn.CreateCommand();
-                    tableCmd.CommandText =
-                        $@"INSERT INTO flashcard (question, answer, stackId) VALUES ('{flashcard.Question}', '{flashcard.Answer}', '{stackId}')";
-                    tableCmd.ExecuteNonQuery();
-
-                    Console.WriteLine(
-                        $"\n\nWould you like to create another flashcard for stack {stackId} - {name}\n\n? (Y/N)\n\n");
-                    
-                    string anotherFlashcard = Console.ReadLine();
-
-                    while (anotherFlashcard != "Y" && anotherFlashcard != "N")
-                    {
-                        Console.WriteLine(
-                            $"\n\nPlease choose Y/N\n\n?");
-                        anotherFlashcard = Console.ReadLine();
-
-                        if (anotherFlashcard == "Y" || anotherFlashcard == "N")
-                            return;
-                        
-                    }
-
-                    if (anotherFlashcard == "N")
-                        createFlashcard = false;
-                  
-                }
-            }
         }
     }
 }

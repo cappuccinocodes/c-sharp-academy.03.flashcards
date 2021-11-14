@@ -1,4 +1,5 @@
-﻿using Flashcards;
+﻿using flashcards.Models;
+using Flashcards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,8 +69,7 @@ namespace flashcards
         internal static void StacksMenu()
         {
             Console.WriteLine("\n\nFlashcard Stacks Area\n");
-            var stacks = StacksController.GetStacks();
-            TableVisualisationEngine.ShowTable(stacks, null);
+            StacksController.GetStacks();
 
             bool closeArea = false;
             while (closeArea == false)
@@ -109,17 +109,15 @@ namespace flashcards
                         StacksController.ManageStack();
                         break;
                     default:
-                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
+                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 3.\n");
                         break;
                 }
             }
         }
 
-        internal static void ManageStackMenu(int? id)
+        internal static void ManageStackMenu(int id, List<FlashcardsWithStack> stack)
         {
             int stackId = (int)id;
-            var stacks = StacksController.GetStacks();
-            TableVisualisationEngine.ShowTable(stacks, null);
 
             bool closeArea = false;
             while (closeArea == false)
@@ -135,7 +133,7 @@ namespace flashcards
 
                 while (string.IsNullOrEmpty(commandInput) || !int.TryParse(commandInput, out _))
                 {
-                    Console.WriteLine("\nInvalid Command. Please type a number from 0 to 3.\n");
+                    Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                     commandInput = Console.ReadLine();
                     if (!string.IsNullOrEmpty(commandInput) || int.TryParse(commandInput, out _))
                     {
@@ -157,13 +155,35 @@ namespace flashcards
                         StacksController.DeleteStack(stackId);
                         break;
                     case 3:
-                        StacksController.ManageStack();
+                        FlashcardsController.CreateFlashcard(stackId, null);
+                        break;
+                    case 4:
+                        FlashcardsController.DeleteFlashcard(stack);
                         break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
                         break;
                 }
             }
+        }
+
+        internal static int GetIdForDeleteFlashcard()
+        {
+            Console.WriteLine("\nWhich flashcard would you like to delete?");
+            string flashcardIdstring = Console.ReadLine();
+
+            while (string.IsNullOrEmpty(flashcardIdstring) || !int.TryParse(flashcardIdstring, out _))
+            {
+                Console.WriteLine("\nInvalid Command. Please type a numeric value");
+                flashcardIdstring = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(flashcardIdstring) || int.TryParse(flashcardIdstring, out _))
+                {
+                    return Int32.Parse(flashcardIdstring);
+                }
+            }
+
+            return Int32.Parse(flashcardIdstring);
         }
     }
 }
