@@ -63,7 +63,7 @@ namespace flashcards
 
         internal static void DeleteFlashcard(List<FlashcardsWithStack> list)
         {
-            int flashcardIdOnView = UserCommands.GetIdForUpdateFlashcard("\nWhich flashcard would you like to update?");
+            int flashcardIdOnView = UserCommands.GetIntegerInput("\nWhich flashcard would you like to update?");
             int flashcardId = list.Select(x => x.Id).ElementAt(flashcardIdOnView - 1);
 
             SqlConnection conn = new(connectionString);
@@ -84,7 +84,7 @@ namespace flashcards
 
         internal static void UpdateFlashcard(List<FlashcardsWithStack> list)
         {
-            int flashcardIdOnView = UserCommands.GetIdForUpdateFlashcard("\nWhich flashcard would you like to update?");
+            int flashcardIdOnView = UserCommands.GetIntegerInput("\nWhich flashcard would you like to update?");
             int flashcardId = list.Select(x => x.Id).ElementAt(flashcardIdOnView - 1);
             string updateCommand = "";
             string newQuestion = "";

@@ -20,11 +20,7 @@ namespace flashcards
         {
             GetStacks();
      
-            Console.WriteLine("\nType the id of the stack you'd like to manage.\n");
-
-            string stackIdString = UserCommands.GetIdForManageStack();
-
-            int stackId = Int32.Parse(stackIdString);
+            int stackId = UserCommands.GetIntegerInput("\nType the id of the stack you'd like to manage.\n");
 
             List<FlashcardsWithStack> stack = GetStackWithCards(stackId);
 

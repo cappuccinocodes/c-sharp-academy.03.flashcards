@@ -23,10 +23,10 @@ namespace flashcards
                 Console.WriteLine("Type 2 to Study.");
 
                 string commandInput = Console.ReadLine();
-                if (string.IsNullOrEmpty(commandInput) || !int.TryParse(commandInput, out _))
+                while (string.IsNullOrEmpty(commandInput) || !int.TryParse(commandInput, out _))
                 {
                     Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
-                    continue;
+                    commandInput = Console.ReadLine();
                 }
 
                 int command = Convert.ToInt32(commandInput);
@@ -40,7 +40,7 @@ namespace flashcards
                         StacksMenu();
                         break;
                     case 2:
-                        StudyController.GetUsercommand();
+                        StudyMenu();
                         break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
@@ -48,7 +48,6 @@ namespace flashcards
                 }
             }
         }
-
         internal static string GetIdForManageStack()
         {
             string stackIdString = Console.ReadLine();
@@ -57,16 +56,10 @@ namespace flashcards
             {
                 Console.WriteLine("\nInvalid Command. Please type a numeric value");
                 stackIdString = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(stackIdString) || int.TryParse(stackIdString, out _))
-                {
-                    return stackIdString;
-                }
             }
 
             return stackIdString;
         }
-
         internal static void StacksMenu()
         {
             Console.WriteLine("\n\nFlashcard Stacks Area\n");
@@ -87,10 +80,6 @@ namespace flashcards
                 {
                     Console.WriteLine("\nInvalid Command. Please type a number from 0 to 3.\n");
                     commandInput = Console.ReadLine();
-                    if (!string.IsNullOrEmpty(commandInput) || int.TryParse(commandInput, out _))
-                    {
-                        continue;
-                    }
                 }
 
                 int command = Convert.ToInt32(commandInput);
@@ -115,7 +104,6 @@ namespace flashcards
                 }
             }
         }
-
         internal static void ManageStackMenu(int id, List<FlashcardsWithStack> stack)
         {
             int stackId = (int)id;
@@ -138,10 +126,6 @@ namespace flashcards
                 {
                     Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                     commandInput = Console.ReadLine();
-                    if (!string.IsNullOrEmpty(commandInput) || int.TryParse(commandInput, out _))
-                    {
-                        continue;
-                    }
                 }
 
                 int command = Convert.ToInt32(commandInput);
@@ -179,7 +163,6 @@ namespace flashcards
                 }
             }
         }
-
         internal static string GetStringInput(string message)
         {
             Console.WriteLine(message);
@@ -189,16 +172,10 @@ namespace flashcards
             {
                 Console.WriteLine("\nInvalid name");
                 name = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    return name;
-                }
             }
 
             return name;
         }
-
         internal static string GetBinaryInput(string message)
         {
             Console.WriteLine(message);
@@ -208,33 +185,66 @@ namespace flashcards
             {
                 Console.WriteLine("\nInvalid option");
                 option = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(option))
-                {
-                    return option;
-                }
             }
 
             return option;
         }
-
-        internal static int GetIdForUpdateFlashcard(string message)
+        internal static int GetIntegerInput(string message)
         {
             Console.WriteLine(message);
-            string flashcardIdstring = Console.ReadLine();
+            string idInput = Console.ReadLine();
 
-            while (string.IsNullOrEmpty(flashcardIdstring) || !int.TryParse(flashcardIdstring, out _))
+            while (string.IsNullOrEmpty(idInput) || !int.TryParse(idInput, out _))
             {
                 Console.WriteLine("\nInvalid Command. Please type a numeric value");
-                flashcardIdstring = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(flashcardIdstring) || int.TryParse(flashcardIdstring, out _))
-                {
-                    return Int32.Parse(flashcardIdstring);
-                }
+                idInput = Console.ReadLine();
             }
 
-            return Int32.Parse(flashcardIdstring);
+            return Int32.Parse(idInput);
+        }
+        internal static void StudyMenu()
+        {
+            Console.WriteLine("\n\nStudy Area\n");
+            StacksController.GetStacks();
+
+            bool closeArea = false;
+            while (closeArea == false)
+            {
+                Console.WriteLine("\nWhat would you like to do?");
+                Console.WriteLine("\nType 0 to Close Application.");
+                Console.WriteLine("Type 1 to return to Main Menu.");
+                Console.WriteLine("Type 2 to study.");
+                Console.WriteLine("Type 3 to see your study sessions.");
+
+                string commandInput = Console.ReadLine();
+
+                while (string.IsNullOrEmpty(commandInput) || !int.TryParse(commandInput, out _))
+                {
+                    Console.WriteLine("\nInvalid Command. Please type a number from 0 to 3.\n");
+                    commandInput = Console.ReadLine();
+                }
+
+                int command = Convert.ToInt32(commandInput);
+
+                switch (command)
+                {
+                    case 0:
+                        closeArea = true;
+                        break;
+                    case 1:
+                        MainMenu();
+                        break;
+                    case 2:
+                        StudyController.CreateStudySession();
+                        break;
+                    case 3:
+                        StacksController.ManageStack();
+                        break;
+                    default:
+                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 3.\n");
+                        break;
+                }
+            }
         }
     }
 }

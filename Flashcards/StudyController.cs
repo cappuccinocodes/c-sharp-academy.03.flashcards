@@ -1,21 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using flashcards.Models;
 
 namespace flashcards
 {
     public class StudyController
     {
-        internal static void GetUsercommand()
+        internal static void CreateStudySession()
         {
-            Console.WriteLine("\n\nHi there! I'm StudySession() and I'm not implemented.\n\n");
-        }
+            List<Stack> stacks = StacksController.GetStacks();
+            var id = UserCommands.GetIntegerInput("Which stack would you like to study?");
 
-        internal static void StudySession(int id)
-        {
-            Console.WriteLine("\n\nHi there! I'm StudySession()\n\n");
+            while (!stacks.Any(x => x.Id == id))
+            {
+                Console.WriteLine("\nThere's no stack wit this id.");
+                id = UserCommands.GetIntegerInput("Which stack would you like to study?");
+            }
+
+            List<FlashcardsWithStack> stack = StacksController.GetStackWithCards(id);
+
+            stack.ForEach(x =>
+            {
+                Console.WriteLine(x.Question);
+            });
+
         }
     }
 }
