@@ -2,7 +2,7 @@
   "profiles": {
     "flashcards": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Projects\\Tutorials\\flashcards"
+      "workingDirectory": "C:\\Tutorials\\flashcards"
     }
   }
 }

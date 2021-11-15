@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace flashcards.Models.DTOs
 {
-    class FlashcardsWithStackToView
+    public class FlashcardsWithStackToView
     {
         public int Id { get; set; }
         public string Question { get; set;  }

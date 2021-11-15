@@ -77,7 +77,8 @@ namespace flashcards
                 conn.Close();
             }
 
-            Console.WriteLine("\n\nYour flashcards stack was successfully deleted.\n\n");
+            Console.WriteLine("\n\nYour flashcard was successfully deleted.\n\n");
+
         }
     }
 }

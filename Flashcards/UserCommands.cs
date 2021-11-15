@@ -39,7 +39,7 @@ namespace flashcards
                         StacksMenu();
                         break;
                     case 2:
-                        Study.GetUsercommand();
+                        StudyController.GetUsercommand();
                         break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
@@ -125,9 +125,10 @@ namespace flashcards
                 Console.WriteLine("\nWhat would you like to do?");
                 Console.WriteLine("\nType 0 to close application.");
                 Console.WriteLine("Type 1 to return to Main Menu");
-                Console.WriteLine("Type 2 to delete stack");
-                Console.WriteLine("Type 3 to add a flashcard");
-                Console.WriteLine("Type 4 to delete a flashcard");
+                Console.WriteLine("Type 2 to change stack's name");
+                Console.WriteLine("Type 3 to delete stack");
+                Console.WriteLine("Type 4 to add a flashcard");
+                Console.WriteLine("Type 5 to delete a flashcard");
 
                 string commandInput = Console.ReadLine();
 
@@ -152,19 +153,44 @@ namespace flashcards
                         MainMenu();
                         break;
                     case 2:
-                        StacksController.DeleteStack(stackId);
+                        StacksController.UpdateStackName(stackId);
                         break;
                     case 3:
-                        FlashcardsController.CreateFlashcard(stackId, null);
+                        StacksController.DeleteStack(stackId);
+                        StacksController.GetStacks();
                         break;
                     case 4:
+                        FlashcardsController.CreateFlashcard(stackId, null);
+                        StacksController.GetStackWithCards(stackId);
+                        break;
+                    case 5:
                         FlashcardsController.DeleteFlashcard(stack);
+                        StacksController.GetStackWithCards(stackId);
                         break;
                     default:
-                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 2.\n");
+                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                         break;
                 }
             }
+        }
+
+        internal static string GetStackName()
+        {
+            Console.WriteLine("\nType new name for stack");
+            string name = Console.ReadLine();
+
+            while (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("\nInvalid name");
+                name = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    return name;
+                }
+            }
+
+            return name;
         }
 
         internal static int GetIdForDeleteFlashcard()

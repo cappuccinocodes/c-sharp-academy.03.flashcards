@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace flashcards
 {
-    public class Study
+    public class StudyController
     {
         internal static void GetUsercommand()
         {

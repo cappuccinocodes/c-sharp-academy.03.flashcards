@@ -16,7 +16,6 @@ namespace flashcards
     {
         public static readonly string connectionString =
             "Server=(localdb)\\MSSQLLocalDB; Initial Catalog=quizDb; Integrated Security=true;";
-
         public static void ManageStack()
         {
             GetStacks();
@@ -107,26 +106,8 @@ namespace flashcards
             reader.Close();
 
             Console.WriteLine("\n\n");
-            
-            string stackName = cards.FirstOrDefault()?.StackName;
-            string tableTitle = $"{id} - {stackName}";
 
-            List<FlashcardsWithStackToView> stackToView = new List<FlashcardsWithStackToView>();
-
-            int cardIndex = 1; 
-            cards.ForEach(x =>
-            {
-                stackToView.Add(new FlashcardsWithStackToView
-                {
-                    Id = cardIndex,
-                    Answer = x.Answer,
-                    Question = x.Question
-                });
-
-                cardIndex++;
-            }); 
-
-            TableVisualisationEngine.ShowTable(stackToView, tableTitle);
+            TableVisualisationEngine.PrepareFlashcardsList(id, cards);
 
             return cards;
 
@@ -170,6 +151,27 @@ namespace flashcards
             }
 
             Console.WriteLine("\n\nYour flashcards stack was successfully deleted.\n\n");
+            UserCommands.StacksMenu();
+        }
+        internal static void UpdateStackName(int stackId)
+        {
+            string name = UserCommands.GetStackName();
+            SqlConnection conn = new(connectionString);
+
+            using (conn)
+            {
+                conn.Open();
+                var tableCmd = conn.CreateCommand();
+                tableCmd.CommandText =
+                    @$"UPDATE stack 
+                       SET name = ('{name}')
+                       WHERE Id = {stackId}";
+                tableCmd.ExecuteNonQuery();
+                conn.Close();
+            }
+
+            Console.WriteLine("\n\nYour flashcards stack was successfully deleted.\n\n");
+            UserCommands.StacksMenu();
         }
         private static int GetStackId()
         {
