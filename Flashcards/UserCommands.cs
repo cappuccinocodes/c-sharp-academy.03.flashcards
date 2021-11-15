@@ -3,6 +3,7 @@ using Flashcards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -129,6 +130,7 @@ namespace flashcards
                 Console.WriteLine("Type 3 to delete stack");
                 Console.WriteLine("Type 4 to add a flashcard");
                 Console.WriteLine("Type 5 to delete a flashcard");
+                Console.WriteLine("Type 6 to update a flashcard");
 
                 string commandInput = Console.ReadLine();
 
@@ -167,16 +169,20 @@ namespace flashcards
                         FlashcardsController.DeleteFlashcard(stack);
                         StacksController.GetStackWithCards(stackId);
                         break;
+                    case 6:
+                        FlashcardsController.UpdateFlashcard(stack);
+                        StacksController.GetStackWithCards(stackId);
+                        break;
                     default:
-                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
+                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 6.\n");
                         break;
                 }
             }
         }
 
-        internal static string GetStackName()
+        internal static string GetStringInput(string message)
         {
-            Console.WriteLine("\nType new name for stack");
+            Console.WriteLine(message);
             string name = Console.ReadLine();
 
             while (string.IsNullOrEmpty(name))
@@ -193,9 +199,28 @@ namespace flashcards
             return name;
         }
 
-        internal static int GetIdForDeleteFlashcard()
+        internal static string GetBinaryInput(string message)
         {
-            Console.WriteLine("\nWhich flashcard would you like to delete?");
+            Console.WriteLine(message);
+            string option = Console.ReadLine();
+
+            while (string.IsNullOrEmpty(option) && !option.Equals("Y") && !option.Equals("N"))
+            {
+                Console.WriteLine("\nInvalid option");
+                option = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(option))
+                {
+                    return option;
+                }
+            }
+
+            return option;
+        }
+
+        internal static int GetIdForUpdateFlashcard(string message)
+        {
+            Console.WriteLine(message);
             string flashcardIdstring = Console.ReadLine();
 
             while (string.IsNullOrEmpty(flashcardIdstring) || !int.TryParse(flashcardIdstring, out _))

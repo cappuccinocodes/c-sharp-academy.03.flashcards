@@ -25,8 +25,8 @@ namespace flashcards
                 stackToView.Add(new FlashcardsWithStackToView
                 {
                     Id = cardIndex,
+                    Question = x.Question,
                     Answer = x.Answer,
-                    Question = x.Question
                 });
 
                 cardIndex++;

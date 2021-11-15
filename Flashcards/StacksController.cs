@@ -93,8 +93,8 @@ namespace flashcards
                         {
                             Id = reader.GetInt32(0),
                             StackName = reader.GetString(1),
-                            Answer = reader.GetString(2),
-                            Question = reader.GetString(3)
+                            Question = reader.GetString(2),
+                            Answer = reader.GetString(3)
                         });
                 }
             }
@@ -155,7 +155,7 @@ namespace flashcards
         }
         internal static void UpdateStackName(int stackId)
         {
-            string name = UserCommands.GetStackName();
+            string name = UserCommands.GetStringInput("Please type new stack name:");
             SqlConnection conn = new(connectionString);
 
             using (conn)
