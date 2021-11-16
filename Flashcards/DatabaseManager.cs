@@ -31,7 +31,7 @@ namespace flashcards
                     conn.Close();
                 }
 
-                CreateTable();
+                CreateTables();
             }
             catch (Exception e)
             {
@@ -39,7 +39,7 @@ namespace flashcards
             }
         }
 
-        internal static void CreateTable()
+        internal static void CreateTables()
         {
             string connectionString = "Server=(localdb)\\MSSQLLocalDB; Initial Catalog=quizDb; Integrated Security=true;";
             SqlConnection conn = new SqlConnection(connectionString);

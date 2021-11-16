@@ -235,10 +235,10 @@ namespace flashcards
                         MainMenu();
                         break;
                     case 2:
-                        StudyController.CreateStudySession();
+                        StudyController.NewStudySession();
                         break;
                     case 3:
-                        StacksController.ManageStack();
+                        StudyController.GetStudySessions();
                         break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 3.\n");

@@ -178,7 +178,6 @@ namespace flashcards
             int id = Convert.ToInt32(comm.ExecuteScalar());
             conn.Close();
             return id;
-
         }
     }
 }

@@ -9,8 +9,8 @@ namespace flashcards
     public class StudySession
     {
         public int Id { get; set; }
-        public int StackId { get; set; }
-        public int CorrectAnswers { get; set; }
-        public double Score { get; set; }
+        public string StackName { get; set; }
+        public int NumberOfquestions { get; set; }
+        public int Score { get; set; }
     }
 }
